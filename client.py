@@ -24,8 +24,13 @@ class Client:
             #verificações
             confere = clientMsg.replace("b'","")
             ack = int(confere[:6])
+            final = int(confere[6:12])
             message = confere[12:]
-            print(ack, int(confere[6:12]))
+
+            print(
+                message,
+                "with {} expected until {}\n".format(ack, final)
+            )
 
             if ack >= espera + self.bufferSize:
                 pass
