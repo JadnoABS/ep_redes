@@ -24,7 +24,7 @@ transmissão.
 Para execurtar o programa foi necessário estabelecer uma relação entre cliente e servidor, das quais são descritas a seguir. Nessa comunicação, o intuito é fazer com que o cliente receba os dados do servidor, sem resposta, apenas mandando um ack ou algum outro tipo de confirmação.
 
 ### Cliente
-Primeiro importamos a biblioteca socket que nos ajudará com a conexão, instânciamos algumas variáveis de controle como IP local e Porta(valor arbitrário). Destacamos tamém o tamanho do buffer em `bufferSize`, isto é, o tamanho máximo de bytes aceitos, que podem chegar. Por fim, temos o `headerSize` que representa o tamnho do cabeçalho das mensagens transmitidas. 
+Primeiro importamos a biblioteca socket que nos ajudará com a conexão, instânciamos algumas variáveis de controle como IP local e Porta(valor arbitrário). Destacamos também o tamanho do buffer em `bufferSize`, isto é, o tamanho máximo de bytes aceitos, que podem chegar. Por fim, temos o `headerSize` que representa o tamnho do cabeçalho das mensagens transmitidas. 
 ```Py
 import socket
 
