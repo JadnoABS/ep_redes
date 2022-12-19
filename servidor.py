@@ -3,12 +3,10 @@ import time
 
 localIP     = "127.0.0.1"
 localPort   = 20001
-bufferSize  = 20
+bufferSize  = 32
 
 msgFromServer       = "Ola Manuel Gomii"
 bytesToSend         = str.encode(msgFromServer)
-espera = 1
- 
 
 # Criando o socket
 UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
@@ -18,6 +16,7 @@ UDPServerSocket.bind((localIP, localPort))
 
 print("UDP server up and listening")
 
+espera = 0
 
 # Esperando por datagramas
 while True:
@@ -29,18 +28,19 @@ while True:
 
     #verificações
     confere = clientMsg.replace("b'","")
-    confere = confere.replace("'","")
-    confere = confere.split('/')
-    
+    ack = int(confere[:6])
+    tamanhoTotal = int(confere[6:12])
+    message = confere[12:]
 
-    if confere[0] == str(espera):
-        if confere[2] == str(len(confere[1])):
-            print("Mensagem cliente: ", confere)
-             #simula timeout
-            # Respondendo cliente se o tamanho da mensagem e a ordem é certa
-            UDPServerSocket.sendto(str.encode(str(espera)), address)
-            espera = espera+1
-        else:
-            UDPServerSocket.sendto(str.encode(str(espera)), address)
-    else:
+    if ack == tamanhoTotal:
+        espera = ack
         UDPServerSocket.sendto(str.encode(str(espera)), address)
+    else:
+        if ack >= espera + bufferSize:
+            # Adicionar ao buffer
+            pass
+        else:
+            # Buffer está vazio? Se não checar se da pra juntar os pacotes
+            espera = ack
+            UDPServerSocket.sendto(str.encode(str(espera)), address)
+            pass
