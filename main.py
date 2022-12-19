@@ -7,10 +7,16 @@ def server(host = 'localhost', port=8082):
     print ("Starting up echo server  on %s port %s" % server_address)
     sock.bind(server_address)
     i = 0
-    while True: 
+    ackNum = 1
+    while True:
         print ("Waiting to receive message from client")
         data, address = sock.recvfrom(data_payload) 
         if data:
             data = data.decode('utf-8')
-            print(data);
+            print(address)
+            print(data)
+
+            ack = "ACK %d\n" % ackNum
+            sock.sendto(ack.encode(), address)
+            ackNum += 1
 server()
