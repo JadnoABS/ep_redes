@@ -44,7 +44,7 @@ UDPClientSocket.settimeout(10)
 ```
 
 ### Servidor
-No lado do servidor temos uma biblioteca a mais, o `time` nos ajudará para fazermos teste quando quisermos mensurar um atraso de propragação, aumentando assim o tempo de resposta. Instânciamos aqui também o IP e a porta local, que **deve ser igual à porta do ** `cliente.py`. Por fim, temos o `bufferSize` que ditará o tamanho das mensagens que podemos receber do cliente, nesse caso não será tão importante porque nossa aplicação explora mais o fluxo de mensagens do cliente para o servidor.
+No lado do servidor temos uma biblioteca a mais, o `time` nos ajudará para fazermos teste quando quisermos mensurar um atraso de propagação, aumentando assim o tempo de resposta. Instanciamos aqui também o IP e a porta local, que **deve ser igual à porta do**  `cliente.py`. Por fim, temos o `bufferSize` que ditará o tamanho das mensagens que podemos receber do cliente, nesse caso não será tão importante porque nossa aplicação explora mais o fluxo de mensagens do cliente para o servidor.
 ```Py
 import socket
 import time
