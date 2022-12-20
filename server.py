@@ -1,4 +1,5 @@
 import socket
+from threading import Thread
 
 
 class Server:
@@ -15,17 +16,21 @@ class Server:
         print("Servidor ouvindo na porta ", client_port)
         self.start_messaging()
 
-    def fragment_envia(self, message, start):
+    def enviar_fragmento(self, i, message, message_size):
+        last_index = self.MSS * (i + 1) if self.MSS * (i + 1) < message_size else message_size 
+        ordem = last_index
+        fragmento = message[self.MSS * i : last_index]
+        mensagem = str(self.currentSize - message_size + ordem).zfill(6) + str(self.currentSize).zfill(6) + fragmento
+        Bytes_msg = bytes(mensagem, 'utf-8')
+        self.UDPClientSocket.sendto(Bytes_msg, self.serverAddressPort())
+
+    def fragmentar(self, message, start):
         message_size = len(message)
         self.currentSize += message_size
         for i in range(start, (message_size // self.MSS) + 1):
-            last_index = self.MSS * (i + 1) if self.MSS * (i + 1) < message_size else message_size 
-            ordem = last_index
-            fragmento = message[self.MSS * i : last_index]
-            mensagem = str(self.currentSize - message_size + ordem).zfill(6) + str(self.currentSize).zfill(6) + fragmento
-            Bytes_msg = bytes(mensagem, 'utf-8')
-            self.UDPClientSocket.sendto(Bytes_msg, self.serverAddressPort())
-
+            t = Thread(target = self.enviar_fragmento, args = (i, message, message_size))
+            t.start()
+            t.join()
 
     def espera_ack(self):
         while self.ack != self.currentSize:
@@ -40,8 +45,10 @@ class Server:
         while True:
             try:
                 msgFromClient = input("Escreva mensagem: ")
-                self.fragment_envia(msgFromClient, 0)               
-                self.espera_ack()
+                self.fragmentar(msgFromClient, 0)               
+                t = Thread(target = self.espera_ack)
+                t.start()
+                t.join()
                 
             except socket.error:
                 print("TimeOut Erro! Mande a mensagem novamente")
