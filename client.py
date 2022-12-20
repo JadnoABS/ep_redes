@@ -31,9 +31,14 @@ class Client:
             # Fora de ordem
             if ack > last_ack + self.MSS:
                 print(message, "Received: {} Last_ack: {}, saving in buffer".format(ack, last_ack))
+                # Adicionar no buffer
+                pass
+            # Ja recebeu pode descartar
+            elif last_ack >= ack:
                 pass
             # Dentro de ordem
             else:
+                # Checar se buffer está vazio ou não 
                 last_ack = ack
                 self.UDPServerSocket.sendto(str.encode(str(ack)), address)
                 print(
