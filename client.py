@@ -1,9 +1,19 @@
 import socket
 import time
 
+def reconstruct_message(buffer: list[dict], ack: int):
+    for message in buffer:
+        if (len(message["value"] + ack == message["ack"])):
+            return message["ack"]
+
+    return ack
+
 
 class Client:
     UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+    max_buffer_size = 256
+    current_buffer_size = 0
+    buffer = []
     MSS = 20
     headerSize = 12
     ip = "127.0.0.1"
@@ -32,20 +42,46 @@ class Client:
             if ack > last_ack + self.MSS:
                 print(message, "Received: {} Last_ack: {}, saving in buffer".format(ack, last_ack))
                 # Adicionar no buffer
-                pass
+                self.current_buffer_size += len(message)
+                if self.current_buffer_size > self.max_buffer_size:
+                    # Enviar mensagem de erro ao servidor
+                    pass
+                else:
+                    self.buffer += {
+                        "value": message,
+                        "ack": ack
+                    }
             # Ja recebeu pode descartar
             elif last_ack >= ack:
                 pass
             # Dentro de ordem
             else:
-                # Checar se buffer está vazio ou não 
-                last_ack = ack
-                self.UDPServerSocket.sendto(str.encode(str(ack)), address)
-                print(
-                    message[:-1],
-                    "with ack:{} expected until :{}".format(ack, final)
-                )
-                pass
+                if (self.current_buffer_size != 0):
+                    new_ack = ack
+                    stop = False
+                    while stop:
+                        new_ack = reconstruct_message(self.buffer, self.ack)
+                        if ack != new_ack:
+                            ack = new_ack
+                            for index, message in enumerate(self.buffer):
+                                if message["ack"] == ack:
+                                    self.buffer.pop(index)
+                        else:
+                            last_ack = ack
+                            self.UDPServerSocket.sendto(str.encode(str(ack)), address)
+                            print(
+                                message[:-1],
+                                "with ack:{} expected until :{}".format(ack, final)
+                            )
+                            stop = True
+                else:
+                    last_ack = ack
+                    self.UDPServerSocket.sendto(str.encode(str(ack)), address)
+                    print(
+                        message[:-1],
+                        "with ack:{} expected until :{}".format(ack, final)
+                    )
+
 
 if __name__ == "__main__":
     client = Client()
