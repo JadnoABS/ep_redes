@@ -74,8 +74,8 @@ print("UDP server up and listening")
   - [ ] Adicionar velocidade de processamento
 - [ ] Server
   - [ ] Adicionar velocidade de banda
-  - [ ] Se receber ack não esperado, reenviar mensage
-  - [ ] Fazer envio e leitura de ack através de threads 1 para envio e 1 para leitura
+  - [ ] Se receber ack não esperado, reenviar mensagem
+  - [ ] Fazer envio e leitura de ack através de threads 1 para cada envio e 1 para cada leitura
   - [ ] Esperar conexão do client
     - [ ] Fazer leitura da port do client e iniciar conexão
 - [x] Bugs
