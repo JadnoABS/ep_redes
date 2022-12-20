@@ -78,8 +78,8 @@ print("UDP server up and listening")
   - [ ] Fazer envio e leitura de ack através de threads 1 para envio e 1 para leitura
   - [ ] Esperar conexão do client
     - [ ] Fazer leitura da port do client e iniciar conexão
-- [ ] Bugs
-  - [ ] Enviar mensagem com tamanho maior que 20 buga o servidor
-    - [ ] O servidor envia as mensagens corretamente
-    - [ ] O cliente recebe corretamente
-    - [ ] No entanto, a leitura pelo servidor não ocorre de maneira correta bugando todas as próximas leituras
+- [x] Bugs
+  - [x] Enviar mensagem com tamanho maior que 20 buga o servidor
+    - [x] O servidor envia as mensagens corretamente
+    - [x] O cliente recebe corretamente
+    - [x] No entanto, a leitura pelo servidor não ocorre de maneira correta bugando todas as próximas leituras

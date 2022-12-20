@@ -1,5 +1,6 @@
 import socket
-  
+import time
+
 
 class Server:
     bufferSize = 20
@@ -7,10 +8,11 @@ class Server:
     UDPClientSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
     currentSize = 0
     server_port = None
+    ack = 0
 
     def new_connection(self, server_port):
         self.server_port = server_port
-        self.UDPClientSocket.settimeout(10)
+        self.UDPClientSocket.settimeout(3)
         self.start_messaging()
 
     def fragment_envia(self, message):
@@ -24,15 +26,16 @@ class Server:
             Bytes_msg = bytes(mensagem, 'utf-8')
             self.UDPClientSocket.sendto(Bytes_msg, self.serverAddressPort())
 
+
     def espera_ack(self):
-        ack = 0
-        while ack != self.currentSize:
+        print("ESPERANDO ACK...", self.ack)
+        while self.ack != self.currentSize:
             msgFromServer = self.UDPClientSocket.recvfrom(self.bufferSize + self.headerSize)
             
             msg = format(msgFromServer[0])
             msg = msg.replace("b'","")
-            ack = int(msg.replace("'",""))
-            print("Ack recebido: ", ack)
+            self.ack = int(msg.replace("'",""))
+            print("Ack recebido: ", self.ack)
 
     def start_messaging(self):
         while True:
