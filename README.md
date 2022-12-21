@@ -67,17 +67,21 @@ print("UDP server up and listening")
 ## TODO
 
 - [ ] Cliente
-  - [ ] Se receber ack não esperado salvar buffer
-  - [ ] Se buffer não estiver vazio, checar se é possível fazer o demultiplexação
-    - [ ] Adicionar buffer de mensagens e seus acks
+  - [x] Se receber ack não esperado salvar buffer
+  - [x] Se buffer não estiver vazio, checar se é possível fazer o demultiplexação
+    - [x] Adicionar buffer de mensagens e seus acks
+  - [ ] Se buffer estiver cheio enviar msg de erro
+  - [ ] Adicionar timer para cada msg ack no buffer ser destruido
+    - [ ] Ao esvaziar buffer devido a timer enviar msg de liberado
   - [ ] Iniciar conexão com servidor
   - [ ] Adicionar velocidade de processamento
 - [ ] Server
   - [ ] Adicionar velocidade de banda
-  - [ ] Se receber ack não esperado, reenviar mensagem
-  - [ ] Fazer envio e leitura de ack através de threads 1 para cada envio e 1 para cada leitura
+  - [x] Se receber ack não esperado, reenviar mensagem
+  - [x] Fazer envio e leitura de ack através de threads 1 para cada envio e 1 para cada leitura
   - [ ] Esperar conexão do client
     - [ ] Fazer leitura da port do client e iniciar conexão
+  - [ ] Wait em caso de código de error
 - [x] Bugs
   - [x] Enviar mensagem com tamanho maior que 20 buga o servidor
     - [x] O servidor envia as mensagens corretamente
