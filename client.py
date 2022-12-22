@@ -14,10 +14,19 @@ class Client:
     max_buffer_size = 256
     current_buffer_size = 0
     buffer = []
+    buffer_timer = []
     MSS = 20
     headerSize = 12
     ip = "127.0.0.1"
     last_ack = None
+
+    def check_buffer_timer(self):
+        for idx, buffer_time in self.buffer_timer:
+            if buffer_time > 0:
+                buffer_time -= 1
+            else:
+                self.buffer.pop(idx)
+        time.sleep(1)
 
     def received_ack_wrong_order(self, ack, message, address):
         print("Salvando no buffer")
@@ -31,6 +40,7 @@ class Client:
                 "value": message,
                 "ack": ack
             })
+            self.buffer_timer[len(self.buffer) - 1] = 20
 
     def check_if_concatenation_of_messages_are_possible(self, ack, address):
         print("Checando se concatenar é possivel")
@@ -87,9 +97,16 @@ class Client:
     def listen_to(self):
         while True:
             bytesAddressPair = self.UDPServerSocket.recvfrom(self.headerSize + self.MSS)
+            # Thread para ouvir por mensagens
             t = Thread(target = self.listen_thread, args = (bytesAddressPair))
             t.start()
             t.join()
+
+            # Thread para o timer do buffer
+            bt = Thread(target = self.check_buffer_timer)
+            bt.start()
+            bt.join()
+
 
 
 
