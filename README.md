@@ -70,7 +70,7 @@ print("UDP server up and listening")
   - [x] Se receber ack não esperado salvar buffer
   - [x] Se buffer não estiver vazio, checar se é possível fazer o demultiplexação
     - [x] Adicionar buffer de mensagens e seus acks
-  - [ ] Se buffer estiver cheio enviar msg de erro
+  - [x] Se buffer estiver cheio enviar msg de erro
   - [ ] Adicionar timer para cada msg ack no buffer ser destruido
     - [ ] Ao esvaziar buffer devido a timer enviar msg de liberado
   - [ ] Iniciar conexão com servidor
