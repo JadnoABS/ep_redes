@@ -1,6 +1,5 @@
 import socket
-import time
-from threading import Thread
+from threading import Thread, Timer
 
 def reconstruct_message(buffer: list[dict], ack: int):
     for message in buffer:
@@ -14,19 +13,15 @@ class Client:
     max_buffer_size = 256
     current_buffer_size = 0
     buffer = []
-    buffer_timer = []
     MSS = 20
     headerSize = 12
     ip = "127.0.0.1"
     last_ack = None
 
-    def check_buffer_timer(self):
-        for idx, buffer_time in self.buffer_timer:
-            if buffer_time > 0:
-                buffer_time -= 1
-            else:
-                self.buffer.pop(idx)
-        time.sleep(1)
+    def check_if_timer(self, ack, value):
+        for index, message in enumerate(self.buffer):
+            if message["ack"] == ack and message["value"] == value:
+                self.buffer.pop(index)
 
     def received_ack_wrong_order(self, ack, message, address):
         print("Salvando no buffer")
@@ -40,7 +35,7 @@ class Client:
                 "value": message,
                 "ack": ack
             })
-            self.buffer_timer[len(self.buffer) - 1] = 20
+            Timer(3, lambda _: self.check_if_timer(ack, message))
 
     def check_if_concatenation_of_messages_are_possible(self, ack, address):
         print("Checando se concatenar é possivel")
@@ -102,10 +97,6 @@ class Client:
             t.start()
             t.join()
 
-            # Thread para o timer do buffer
-            bt = Thread(target = self.check_buffer_timer)
-            bt.start()
-            bt.join()
 
 
 

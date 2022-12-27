@@ -56,24 +56,22 @@ class Server:
     def espera_ack(self, maxSize, msgFromClient):
         received_bytes = 0
         while self.ack != maxSize:
-            msgFromServer
             try:
                 msgFromServer = self.UDPClientSocket.recvfrom(self.MSS + self.headerSize)
+                msg = format(msgFromServer[0])
+                msg = msg.replace("b'","")
+                received_ack = int(msg.replace("'",""))
+                if received_ack == -1:
+                    self.should_wait = True
+                    pass
+                else:
+                    self.should_wait = False
+                received_bytes = received_ack - self.ack
+                self.ack = received_ack
+                print("Ack recebido: ", self.ack)
             except socket.error:
                 print("Timeout reenviando a partir do byte {}".format(received_bytes))
                 self.fragmentar(msgFromClient, received_bytes)
-            
-            msg = format(msgFromServer[0])
-            msg = msg.replace("b'","")
-            received_ack = msg.replace("'","")
-            if int(received_ack) == -1:
-                self.should_wait = True
-                pass
-            else:
-                self.should_wait = False
-            received_bytes = received_ack - self.ack
-            self.ack = int(received_ack)
-            print("Ack recebido: ", self.ack)
         
 
     def start_messaging(self):
